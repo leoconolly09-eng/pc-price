@@ -236,70 +236,67 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    /* ---------- DASHBOARD ---------- */
+    /* ---------- DASHBOARD HERO ---------- */
 
     .hero {
-      min-height: 440px;
+      min-height: 390px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 56px;
+      align-items: center;
+      padding: 42px;
       position: relative;
       overflow: hidden;
       border-radius: 16px;
       border: 1px solid var(--border);
       background:
-        radial-gradient(circle at 80% 20%, rgba(85,183,255,.11), transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(85,183,255,.10), transparent 42%),
         linear-gradient(145deg, rgba(13,19,29,.96), rgba(7,11,18,.98));
       box-shadow: var(--shadow);
     }
 
-    .hero::after {
+    .ascii-logo-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex;
+      justify-content: center;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(85,183,255,.35) transparent;
+    }
+
+    .ascii-logo {
+      margin: 0;
+      width: max-content;
+      min-width: max-content;
+      color: var(--accent);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: clamp(5px, 0.72vw, 11px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      text-align: left;
+      text-shadow:
+        0 0 8px rgba(85,183,255,.18),
+        0 0 24px rgba(85,183,255,.10);
+      user-select: none;
+    }
+
+    .hero::before {
       content: "";
       position: absolute;
-      width: 500px;
-      height: 500px;
-      right: -180px;
-      bottom: -230px;
-      border: 1px solid rgba(85,183,255,.12);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 40px rgba(85,183,255,.025),
-        0 0 0 80px rgba(85,183,255,.018),
-        0 0 0 120px rgba(85,183,255,.012);
+      inset: 0;
       pointer-events: none;
+      background:
+        linear-gradient(
+          rgba(85,183,255,.025) 1px,
+          transparent 1px
+        );
+      background-size: 100% 4px;
+      mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 28px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: 1px solid var(--border-strong);
-      border-radius: 7px;
-      padding: 11px 16px;
-      background: rgba(85,183,255,.08);
-      color: var(--text);
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .btn:hover {
-      background: rgba(85,183,255,.15);
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #03101b;
-      border-color: var(--accent);
-    }
-
-    .btn-primary:hover {
-      background: #78c7ff;
-    }
+    /* ---------- STATS ---------- */
 
     .stats {
       margin-top: 22px;
@@ -435,6 +432,32 @@
     .textarea {
       min-height: 110px;
       resize: vertical;
+    }
+
+    /* ---------- BUTTONS ---------- */
+
+    .btn {
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 11px 16px;
+      background: rgba(85,183,255,.08);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .btn:hover {
+      background: rgba(85,183,255,.15);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #03101b;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: #78c7ff;
     }
 
     /* ---------- ANALYSER ---------- */
@@ -585,7 +608,11 @@
       }
 
       .hero {
-        padding: 38px 28px;
+        padding: 34px 20px;
+      }
+
+      .ascii-logo {
+        font-size: 7px;
       }
     }
 
@@ -600,12 +627,12 @@
       }
 
       .hero {
-        min-height: 390px;
-        padding: 30px 22px;
+        min-height: 300px;
+        padding: 25px 10px;
       }
 
-      h1 {
-        font-size: 40px;
+      .ascii-logo {
+        font-size: 5px;
       }
 
       .form-grid {
@@ -653,29 +680,20 @@
     <!-- DASHBOARD -->
     <section id="dashboard" class="view active">
 
-      <div class="hero">
-        <div class="eyebrow">PC PRICE / SYSTEM ONLINE</div>
+      <div class="hero ascii-hero">
 
-        <h1>
-          Find the deal.<br>
-          Know the value.
-        </h1>
-
-        <p class="lead">
-          PC Price combines real hardware-market observations with
-          transparent analysis to help you decide whether a deal is
-          worth buying, negotiating or walking away from.
-        </p>
-
-        <div class="hero-actions">
-          <button class="btn btn-primary" data-go="analyser">
-            Analyse a deal
-          </button>
-
-          <button class="btn" data-go="market">
-            Explore market
-          </button>
+        <div class="ascii-logo-wrap">
+          <pre class="ascii-logo">░▒▓███████▓▒░ ░▒▓██████▓▒░       ░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓████████▓▒░ 
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░        
+░▒▓███████▓▒░░▒▓█▓▒░             ░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░   
+░▒▓█▓▒░      ░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░        
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        
+░▒▓█▓▒░       ░▒▓██████▓▒░       ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░░▒▓████████▓▒░ 
+                                                                                             
+                                                                                              </pre>
         </div>
+
       </div>
 
       <div class="grid grid-4 stats">
@@ -1202,14 +1220,6 @@
       );
     }
 
-    /*
-      We deliberately do NOT manufacture a market-value comparison.
-
-      A true price/value assessment requires genuine market observations.
-      Until we have those, the result is based only on information the user
-      actually provided.
-    */
-
     let calculatedScore = knownFactors
       ? Math.round(points / 85 * 100)
       : null;
@@ -1224,11 +1234,6 @@
     }
 
     reasons.innerHTML = reasonItems.join("");
-
-    /*
-      Do not produce a fake recommended offer.
-      We need a real market benchmark before recommending a negotiation price.
-    */
 
     offer.textContent = "£XXX";
 
@@ -1294,11 +1299,6 @@
     const angles = labels.map((_, i) =>
       -Math.PI / 2 + (Math.PI * 2 * i / labels.length)
     );
-
-    /*
-      "Market" intentionally remains unknown until we have real
-      market observations.
-    */
 
     const data = [
       values.price ?? null,
@@ -1386,10 +1386,6 @@
       ctx.fillStyle = "#55b7ff";
       ctx.fill();
     });
-
-    /*
-      Unknown market data is explicitly represented in the chart.
-    */
 
     const unknownIndex = 5;
     const ux = cx + Math.cos(angles[unknownIndex]) * (radius + 8);
