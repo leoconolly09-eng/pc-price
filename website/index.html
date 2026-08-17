@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Price — PC Hardware Market Intelligence</title>
+
+  <style>
+    :root {
+      --bg: #070b12;
+      --panel: #0d131d;
+      --panel-2: #111a27;
+      --border: rgba(105, 180, 255, 0.16);
+      --border-strong: rgba(105, 180, 255, 0.35);
+      --text: #edf5ff;
+      --muted: #7f91a8;
+      --accent: #55b7ff;
+      --accent-2: #8b7cff;
+      --green: #54e39a;
+      --yellow: #ffd166;
+      --red: #ff6b7a;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(55, 135, 220, 0.12), transparent 32%),
+        radial-gradient(circle at 90% 15%, rgba(139, 124, 255, 0.10), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    /* ---------- NAV ---------- */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 30px;
+      background: rgba(7, 11, 18, 0.86);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(145deg, rgba(85,183,255,.18), rgba(139,124,255,.08));
+      box-shadow: 0 0 25px rgba(85,183,255,.12);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .brand-name {
+      letter-spacing: .16em;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .08em;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: var(--text);
+      background: rgba(85,183,255,.08);
+    }
+
+    .nav button.active {
+      box-shadow: inset 0 -1px var(--accent);
+    }
+
+    /* ---------- LAYOUT ---------- */
+
+    main {
+      width: min(1400px, calc(100% - 44px));
+      margin: 0 auto;
+      padding: 42px 0 80px;
+    }
+
+    .view {
+      display: none;
+      animation: fadeIn .25s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: .98;
+      letter-spacing: -.045em;
+      max-width: 760px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-size: 25px;
+      letter-spacing: -.025em;
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      max-width: 680px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* ---------- PANELS ---------- */
+
+    .panel {
+      background:
+        linear-gradient(145deg, rgba(17,26,39,.94), rgba(10,15,23,.94));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-pad {
+      padding: 22px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* ---------- DASHBOARD ---------- */
+
+    .hero {
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 56px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(circle at 80% 20%, rgba(85,183,255,.11), transparent 30%),
+        linear-gradient(145deg, rgba(13,19,29,.96), rgba(7,11,18,.98));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      right: -180px;
+      bottom: -230px;
+      border: 1px solid rgba(85,183,255,.12);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 40px rgba(85,183,255,.025),
+        0 0 0 80px rgba(85,183,255,.018),
+        0 0 0 120px rgba(85,183,255,.012);
+      pointer-events: none;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 11px 16px;
+      background: rgba(85,183,255,.08);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .btn:hover {
+      background: rgba(85,183,255,.15);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #03101b;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: #78c7ff;
+    }
+
+    .stats {
+      margin-top: 22px;
+    }
+
+    .stat {
+      padding: 18px;
+      min-height: 108px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: 9px;
+      margin-bottom: 14px;
+    }
+
+    .stat-value {
+      font-size: 25px;
+      font-weight: 750;
+      letter-spacing: -.025em;
+    }
+
+    .stat-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .unknown {
+      color: var(--muted);
+      letter-spacing: .08em;
+    }
+
+    /* ---------- DEAL CARDS ---------- */
+
+    .deal-card {
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .deal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 2px;
+      background: var(--accent);
+    }
+
+    .deal-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .deal-name {
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .deal-meta {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .deal-price {
+      font-size: 25px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag-green {
+      color: var(--green);
+      border-color: rgba(84,227,154,.22);
+      background: rgba(84,227,154,.06);
+    }
+
+    .tag-yellow {
+      color: var(--yellow);
+      border-color: rgba(255,209,102,.22);
+      background: rgba(255,209,102,.06);
+    }
+
+    .tag-red {
+      color: var(--red);
+      border-color: rgba(255,107,122,.22);
+      background: rgba(255,107,122,.06);
+    }
+
+    /* ---------- SEARCH ---------- */
+
+    .searchbar {
+      display: flex;
+      gap: 8px;
+      margin: 24px 0;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: rgba(5,9,15,.75);
+      color: var(--text);
+      padding: 12px 13px;
+      outline: none;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--border-strong);
+      box-shadow: 0 0 0 3px rgba(85,183,255,.06);
+    }
+
+    .textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* ---------- ANALYSER ---------- */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    .analysis-result {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .decision {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .1em;
+    }
+
+    .decision.buy {
+      color: var(--green);
+      background: rgba(84,227,154,.08);
+      border: 1px solid rgba(84,227,154,.22);
+    }
+
+    .decision.negotiate {
+      color: var(--yellow);
+      background: rgba(255,209,102,.08);
+      border: 1px solid rgba(255,209,102,.22);
+    }
+
+    .decision.ignore {
+      color: var(--red);
+      background: rgba(255,107,122,.08);
+      border: 1px solid rgba(255,107,122,.22);
+    }
+
+    .score {
+      font-size: 55px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: -.05em;
+      margin: 22px 0 8px;
+    }
+
+    .score-caption {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .reason-list {
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reason-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .reason-list strong {
+      color: var(--text);
+    }
+
+    /* ---------- RADAR ---------- */
+
+    .radar-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 340px;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+
+    /* ---------- PORTFOLIO ---------- */
+
+    .portfolio-empty {
+      padding: 55px 25px;
+      text-align: center;
+    }
+
+    .portfolio-empty .icon {
+      font-size: 35px;
+      margin-bottom: 15px;
+      opacity: .8;
+    }
+
+    /* ---------- FOOTER ---------- */
+
+    footer {
+      width: min(1400px, calc(100% - 44px));
+      margin: 0 auto;
+      padding: 24px 0 35px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 950px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 38px 28px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      main,
+      footer {
+        width: min(100% - 26px, 1400px);
+      }
+
+      main {
+        padding-top: 25px;
+      }
+
+      .hero {
+        min-height: 390px;
+        padding: 30px 22px;
+      }
+
+      h1 {
+        font-size: 40px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">P</div>
+      <div>
+        <div class="brand-name">PC PRICE</div>
+        <div class="brand-sub">HARDWARE MARKET INTELLIGENCE</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="active" data-view="dashboard">Dashboard</button>
+      <button data-view="market">Market</button>
+      <button data-view="analyser">Deal Analyser</button>
+      <button data-view="portfolio">Portfolio</button>
+      <button data-view="insights">Insights</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="view active">
+
+      <div class="hero">
+        <div class="eyebrow">PC PRICE / SYSTEM ONLINE</div>
+
+        <h1>
+          Find the deal.<br>
+          Know the value.
+        </h1>
+
+        <p class="lead">
+          PC Price combines real hardware-market observations with
+          transparent analysis to help you decide whether a deal is
+          worth buying, negotiating or walking away from.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-go="analyser">
+            Analyse a deal
+          </button>
+
+          <button class="btn" data-go="market">
+            Explore market
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-4 stats">
+        <div class="panel stat">
+          <div class="stat-label">Tracked products</div>
+          <div class="stat-value">1</div>
+          <div class="stat-note">Real database record</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Live observations</div>
+          <div class="stat-value unknown">X</div>
+          <div class="stat-note">Automated sources pending</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Used market median</div>
+          <div class="stat-value unknown">£XXX</div>
+          <div class="stat-note">Insufficient observations</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Best current deal</div>
+          <div class="stat-value unknown">£XXX</div>
+          <div class="stat-note">Awaiting live market data</div>
+        </div>
+      </div>
+
+      <div style="margin-top:42px">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">REAL-TIME FEED</div>
+            <h2>Latest opportunities</h2>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="panel deal-card">
+            <div class="deal-top">
+              <div>
+                <div class="deal-name">GeForce RTX 5070</div>
+                <div class="deal-meta">NVIDIA · GPU · Used</div>
+              </div>
+              <div class="deal-price">£XXX</div>
+            </div>
+            <div class="tag">Market data unavailable</div>
+          </div>
+
+          <div class="panel deal-card">
+            <div class="deal-top">
+              <div>
+                <div class="deal-name">XXXX XXXX</div>
+                <div class="deal-meta">XXXX · XXXX · Used</div>
+              </div>
+              <div class="deal-price">£XXX</div>
+            </div>
+            <div class="tag">Awaiting source</div>
+          </div>
+
+          <div class="panel deal-card">
+            <div class="deal-top">
+              <div>
+                <div class="deal-name">XXXX XXXX</div>
+                <div class="deal-meta">XXXX · XXXX · New</div>
+              </div>
+              <div class="deal-price">£XXX</div>
+            </div>
+            <div class="tag">Awaiting source</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- MARKET -->
+    <section id="market" class="view">
+
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">MARKET INTELLIGENCE</div>
+          <h2>Hardware market</h2>
+          <p class="lead">
+            Real listings and observations will appear here as approved
+            data sources become available.
+          </p>
+        </div>
+      </div>
+
+      <div class="searchbar">
+        <input class="input" type="search" placeholder="Search components...">
+        <select class="select" style="max-width:150px">
+          <option>All</option>
+          <option>New</option>
+          <option>Used</option>
+        </select>
+        <button class="btn btn-primary">Search</button>
+      </div>
+
+      <div class="grid grid-3">
+
+        <div class="panel panel-pad">
+          <div class="eyebrow">GPU</div>
+          <h3>GeForce RTX 5070</h3>
+          <p class="deal-meta">NVIDIA · GeForce RTX 50</p>
+
+          <div style="margin-top:25px">
+            <div class="stat-label">Current lowest</div>
+            <div class="stat-value unknown">£XXX</div>
+          </div>
+
+          <div style="margin-top:18px">
+            <div class="stat-label">Used market</div>
+            <div class="stat-value unknown">£XXX</div>
+          </div>
+        </div>
+
+        <div class="panel panel-pad">
+          <div class="eyebrow">DATA STATUS</div>
+          <h3>Sources</h3>
+
+          <div class="reason-list">
+            <li><strong>Scan</strong> — Awaiting programme approval</li>
+            <li><strong>eBay</strong> — Developer approval pending</li>
+            <li><strong>Vinted</strong> — Authorised access unknown</li>
+          </div>
+        </div>
+
+        <div class="panel panel-pad">
+          <div class="eyebrow">OBSERVATIONS</div>
+          <h3>RTX 5070</h3>
+
+          <div style="margin-top:25px">
+            <div class="stat-label">Observed listings</div>
+            <div class="stat-value unknown">XX</div>
+          </div>
+
+          <div style="margin-top:18px">
+            <div class="stat-label">Last observation</div>
+            <div class="stat-value unknown">XX/XX/XXXX</div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ANALYSER -->
+    <section id="analyser" class="view">
+
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">DEAL ANALYSER</div>
+          <h2>Analyse a deal</h2>
+          <p class="lead">
+            Enter a deal you've found. PC Price will assess the available
+            information and explain whether you should buy, negotiate or ignore it.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+
+        <div class="panel panel-pad">
+
+          <div class="form-grid">
+
+            <div class="field full">
+              <label>Product</label>
+              <input id="dealProduct" class="input" placeholder="e.g. ASUS RTX 5070">
+            </div>
+
+            <div class="field">
+              <label>Asking price (£)</label>
+              <input id="dealPrice" class="input" type="number" min="0" step="1" placeholder="325">
+            </div>
+
+            <div class="field">
+              <label>Condition</label>
+              <select id="dealCondition" class="select">
+                <option value="unknown">Unknown</option>
+                <option value="new">New</option>
+                <option value="excellent">Excellent</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair</option>
+                <option value="poor">Poor</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Age</label>
+              <select id="dealAge" class="select">
+                <option value="unknown">Unknown</option>
+                <option value="new">New / unused</option>
+                <option value="under1">Under 1 year</option>
+                <option value="1to3">1–3 years</option>
+                <option value="over3">Over 3 years</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Warranty</label>
+              <select id="dealWarranty" class="select">
+                <option value="unknown">Unknown</option>
+                <option value="full">Full / substantial</option>
+                <option value="some">Some remaining</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Seller confidence</label>
+              <select id="dealSeller" class="select">
+                <option value="unknown">Unknown</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Platform</label>
+              <input id="dealPlatform" class="input" placeholder="eBay, Vinted, Gumtree...">
+            </div>
+
+            <div class="field">
+              <label>Listing URL</label>
+              <input id="dealUrl" class="input" type="url" placeholder="https://...">
+            </div>
+
+            <div class="field full">
+              <label>Notes / defects / extras</label>
+              <textarea id="dealNotes" class="textarea"
+                placeholder="Describe the condition, included accessories, defects, seller comments, etc."></textarea>
+            </div>
+
+          </div>
+
+          <button id="analyseButton" class="btn btn-primary" style="margin-top:18px;width:100%">
+            Analyse deal
+          </button>
+
+        </div>
+
+        <div class="panel panel-pad analysis-result">
+
+          <div>
+            <div class="eyebrow">ASSESSMENT</div>
+
+            <div id="decision" class="decision negotiate">
+              ENTER DEAL
+            </div>
+
+            <div id="score" class="score unknown">XX</div>
+            <div class="score-caption">Deal score / 100</div>
+
+            <ul id="reasons" class="reason-list">
+              <li><strong>Price:</strong> awaiting input</li>
+              <li><strong>Condition:</strong> awaiting input</li>
+              <li><strong>Market benchmark:</strong> unavailable</li>
+              <li><strong>Risk:</strong> awaiting input</li>
+            </ul>
+          </div>
+
+          <div style="margin-top:30px">
+            <div class="stat-label">Recommended offer</div>
+            <div id="offer" class="stat-value unknown">£XXX</div>
+            <div class="stat-note">
+              Only calculated when sufficient information exists.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="panel panel-pad" style="margin-top:16px">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">DEAL PROFILE</div>
+            <h2>Value radar</h2>
+          </div>
+        </div>
+
+        <div class="radar-wrap">
+          <canvas id="radar" width="500" height="360"></canvas>
+        </div>
+
+        <p class="deal-meta" style="text-align:center">
+          Unknown dimensions are intentionally shown as unavailable rather than fabricated.
+        </p>
+      </div>
+
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="view">
+
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">MY HARDWARE</div>
+          <h2>Portfolio</h2>
+          <p class="lead">
+            Track your PCs, components, purchase prices and future market values.
+          </p>
+        </div>
+
+        <button class="btn btn-primary">Add hardware</button>
+      </div>
+
+      <div class="panel portfolio-empty">
+        <div class="icon">◈</div>
+        <h3>No hardware added yet</h3>
+        <p class="deal-meta">
+          Your PCs and individual components will appear here.
+        </p>
+        <button class="btn" style="margin-top:12px">Add your first component</button>
+      </div>
+
+    </section>
+
+    <!-- INSIGHTS -->
+    <section id="insights" class="view">
+
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">MARKET INTELLIGENCE</div>
+          <h2>Insights</h2>
+          <p class="lead">
+            Trends and statistics will become available as PC Price collects enough
+            genuine market observations.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="panel stat">
+          <div class="stat-label">Median used discount</div>
+          <div class="stat-value unknown">XX%</div>
+          <div class="stat-note">Insufficient observations</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Best category</div>
+          <div class="stat-value unknown">XXXX</div>
+          <div class="stat-note">Awaiting data</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Deals observed</div>
+          <div class="stat-value unknown">XXX</div>
+          <div class="stat-note">Automated + manual</div>
+        </div>
+
+        <div class="panel stat">
+          <div class="stat-label">Market confidence</div>
+          <div class="stat-value unknown">XX%</div>
+          <div class="stat-note">Based on observation depth</div>
+        </div>
+      </div>
+
+      <div class="panel panel-pad" style="margin-top:16px;min-height:320px;display:grid;place-items:center">
+        <div style="text-align:center">
+          <div class="eyebrow">PRICE TREND</div>
+          <h3>Insufficient real observations</h3>
+          <p class="deal-meta">
+            Charts will appear automatically once enough genuine market data has been collected.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <span>PC PRICE / MARKET INTELLIGENCE</span>
+    <span>Data is never fabricated. Unknown values are marked X.</span>
+  </footer>
+
+</div>
+
+<script>
+  /* ---------- NAVIGATION ---------- */
+
+  const navButtons = document.querySelectorAll("[data-view]");
+  const views = document.querySelectorAll(".view");
+
+  function showView(name) {
+    views.forEach(view => {
+      view.classList.toggle("active", view.id === name);
+    });
+
+    navButtons.forEach(button => {
+      button.classList.toggle("active", button.dataset.view === name);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  navButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      showView(button.dataset.view);
+    });
+  });
+
+  document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => {
+      showView(button.dataset.go);
+    });
+  });
+
+
+  /* ---------- DEAL ANALYSER ---------- */
+
+  const analyseButton = document.getElementById("analyseButton");
+
+  analyseButton.addEventListener("click", analyseDeal);
+
+  function analyseDeal() {
+    const price = Number(document.getElementById("dealPrice").value);
+    const condition = document.getElementById("dealCondition").value;
+    const age = document.getElementById("dealAge").value;
+    const warranty = document.getElementById("dealWarranty").value;
+    const seller = document.getElementById("dealSeller").value;
+
+    const decision = document.getElementById("decision");
+    const score = document.getElementById("score");
+    const reasons = document.getElementById("reasons");
+    const offer = document.getElementById("offer");
+
+    let points = 0;
+    let knownFactors = 0;
+    const reasonItems = [];
+
+    if (price > 0) {
+      knownFactors++;
+      points += 20;
+
+      reasonItems.push(
+        `<li><strong>Price:</strong> £${price.toLocaleString("en-GB")} recorded from your input.</li>`
+      );
+    } else {
+      reasonItems.push(
+        `<li><strong>Price:</strong> unknown.</li>`
+      );
+    }
+
+    const conditionScores = {
+      new: 20,
+      excellent: 18,
+      good: 14,
+      fair: 8,
+      poor: 2
+    };
+
+    if (conditionScores[condition] !== undefined) {
+      knownFactors++;
+      points += conditionScores[condition];
+
+      reasonItems.push(
+        `<li><strong>Condition:</strong> ${condition}.</li>`
+      );
+    } else {
+      reasonItems.push(
+        `<li><strong>Condition:</strong> unknown.</li>`
+      );
+    }
+
+    const ageScores = {
+      new: 15,
+      under1: 13,
+      "1to3": 9,
+      over3: 4
+    };
+
+    if (ageScores[age] !== undefined) {
+      knownFactors++;
+      points += ageScores[age];
+
+      reasonItems.push(
+        `<li><strong>Age:</strong> ${document.getElementById("dealAge").selectedOptions[0].text}.</li>`
+      );
+    } else {
+      reasonItems.push(
+        `<li><strong>Age:</strong> unknown.</li>`
+      );
+    }
+
+    const warrantyScores = {
+      full: 15,
+      some: 10,
+      none: 3
+    };
+
+    if (warrantyScores[warranty] !== undefined) {
+      knownFactors++;
+      points += warrantyScores[warranty];
+
+      reasonItems.push(
+        `<li><strong>Warranty:</strong> ${document.getElementById("dealWarranty").selectedOptions[0].text}.</li>`
+      );
+    } else {
+      reasonItems.push(
+        `<li><strong>Warranty:</strong> unknown.</li>`
+      );
+    }
+
+    const sellerScores = {
+      high: 15,
+      medium: 9,
+      low: 3
+    };
+
+    if (sellerScores[seller] !== undefined) {
+      knownFactors++;
+      points += sellerScores[seller];
+
+      reasonItems.push(
+        `<li><strong>Seller confidence:</strong> ${document.getElementById("dealSeller").selectedOptions[0].text}.</li>`
+      );
+    } else {
+      reasonItems.push(
+        `<li><strong>Seller confidence:</strong> unknown.</li>`
+      );
+    }
+
+    /*
+      We deliberately do NOT manufacture a market-value comparison.
+
+      A true price/value assessment requires genuine market observations.
+      Until we have those, the result is based only on information the user
+      actually provided.
+    */
+
+    let calculatedScore = knownFactors
+      ? Math.round(points / 85 * 100)
+      : null;
+
+    if (calculatedScore !== null) {
+      calculatedScore = Math.max(0, Math.min(100, calculatedScore));
+      score.textContent = calculatedScore;
+      score.classList.remove("unknown");
+    } else {
+      score.textContent = "XX";
+      score.classList.add("unknown");
+    }
+
+    reasons.innerHTML = reasonItems.join("");
+
+    /*
+      Do not produce a fake recommended offer.
+      We need a real market benchmark before recommending a negotiation price.
+    */
+
+    offer.textContent = "£XXX";
+
+    decision.className = "decision";
+
+    if (calculatedScore === null) {
+      decision.textContent = "INSUFFICIENT DATA";
+      decision.classList.add("negotiate");
+    } else if (calculatedScore >= 75) {
+      decision.textContent = "BUY";
+      decision.classList.add("buy");
+    } else if (calculatedScore >= 50) {
+      decision.textContent = "NEGOTIATE";
+      decision.classList.add("negotiate");
+    } else {
+      decision.textContent = "IGNORE";
+      decision.classList.add("ignore");
+    }
+
+    drawRadar({
+      price: price > 0 ? 75 : null,
+      condition: conditionScores[condition] !== undefined
+        ? conditionScores[condition] * 5
+        : null,
+      age: ageScores[age] !== undefined
+        ? ageScores[age] * 6.6
+        : null,
+      warranty: warrantyScores[warranty] !== undefined
+        ? warrantyScores[warranty] * 6.6
+        : null,
+      seller: sellerScores[seller] !== undefined
+        ? sellerScores[seller] * 6.6
+        : null
+    });
+  }
+
+
+  /* ---------- RADAR CHART ---------- */
+
+  const radarCanvas = document.getElementById("radar");
+  const radarContext = radarCanvas.getContext("2d");
+
+  function drawRadar(values = {}) {
+    const ctx = radarContext;
+    const width = radarCanvas.width;
+    const height = radarCanvas.height;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const cx = width / 2;
+    const cy = height / 2 + 5;
+    const radius = 115;
+
+    const labels = [
+      "Price",
+      "Condition",
+      "Age",
+      "Warranty",
+      "Seller",
+      "Market"
+    ];
+
+    const angles = labels.map((_, i) =>
+      -Math.PI / 2 + (Math.PI * 2 * i / labels.length)
+    );
+
+    /*
+      "Market" intentionally remains unknown until we have real
+      market observations.
+    */
+
+    const data = [
+      values.price ?? null,
+      values.condition ?? null,
+      values.age ?? null,
+      values.warranty ?? null,
+      values.seller ?? null,
+      null
+    ];
+
+    ctx.lineWidth = 1;
+
+    for (let ring = 1; ring <= 4; ring++) {
+      ctx.beginPath();
+
+      labels.forEach((_, i) => {
+        const r = radius * ring / 4;
+        const x = cx + Math.cos(angles[i]) * r;
+        const y = cy + Math.sin(angles[i]) * r;
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+
+      ctx.closePath();
+      ctx.strokeStyle = "rgba(105,180,255,.13)";
+      ctx.stroke();
+    }
+
+    labels.forEach((label, i) => {
+      const x = cx + Math.cos(angles[i]) * (radius + 35);
+      const y = cy + Math.sin(angles[i]) * (radius + 35);
+
+      ctx.fillStyle = "#7f91a8";
+      ctx.font = "10px Inter, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x, y);
+    });
+
+    const validPoints = [];
+
+    data.forEach((value, i) => {
+      if (value === null) return;
+
+      const r = radius * Math.max(0, Math.min(100, value)) / 100;
+      const x = cx + Math.cos(angles[i]) * r;
+      const y = cy + Math.sin(angles[i]) * r;
+
+      validPoints.push({ x, y });
+    });
+
+    if (validPoints.length >= 3) {
+      ctx.beginPath();
+
+      validPoints.forEach((point, i) => {
+        if (i === 0) {
+          ctx.moveTo(point.x, point.y);
+        } else {
+          ctx.lineTo(point.x, point.y);
+        }
+      });
+
+      ctx.closePath();
+      ctx.fillStyle = "rgba(85,183,255,.10)";
+      ctx.fill();
+
+      ctx.strokeStyle = "#55b7ff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    data.forEach((value, i) => {
+      if (value === null) return;
+
+      const r = radius * Math.max(0, Math.min(100, value)) / 100;
+      const x = cx + Math.cos(angles[i]) * r;
+      const y = cy + Math.sin(angles[i]) * r;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#55b7ff";
+      ctx.fill();
+    });
+
+    /*
+      Unknown market data is explicitly represented in the chart.
+    */
+
+    const unknownIndex = 5;
+    const ux = cx + Math.cos(angles[unknownIndex]) * (radius + 8);
+    const uy = cy + Math.sin(angles[unknownIndex]) * (radius + 8);
+
+    ctx.fillStyle = "#7f91a8";
+    ctx.font = "11px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("X", ux, uy);
+  }
+
+  drawRadar();
+
+</script>
+</body>
+</html>
